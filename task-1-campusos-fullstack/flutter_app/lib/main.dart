@@ -26,6 +26,7 @@ import 'features/queue/presentation/controllers/queue_controller.dart';
 import 'data/repositories/mock_campus_room_repository.dart';
 import 'domain/repositories/campus_room_repository.dart';
 import 'features/rooms/presentation/controllers/campus_room_controller.dart';
+import 'features/sos/presentation/controllers/sos_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,6 +61,7 @@ void main() async {
   final CampusRoomController roomController = CampusRoomController(
     repository: roomRepository,
   );
+  final SosController sosController = SosController();
   final AdminDashboardController adminDashboardController =
       AdminDashboardController(
         issueRepository: issueRepository,
@@ -84,6 +86,7 @@ void main() async {
         ChangeNotifierProvider<CampusRoomController>.value(
           value: roomController,
         ),
+        ChangeNotifierProvider<SosController>.value(value: sosController),
         ChangeNotifierProvider<AdminDashboardController>.value(
           value: adminDashboardController,
         ),

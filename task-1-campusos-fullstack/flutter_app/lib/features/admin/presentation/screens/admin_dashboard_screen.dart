@@ -5,6 +5,9 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../domain/entities/issue_entity.dart';
 
 import 'package:campusos/features/auth/presentation/controllers/auth_controller.dart';
+import 'package:campusos/features/sos/presentation/controllers/sos_controller.dart';
+import 'package:campusos/features/sos/presentation/widgets/sos_emergency_dialog.dart';
+import 'package:campusos/features/sos/domain/entities/sos_alert_entity.dart';
 
 import '../controllers/admin_dashboard_controller.dart';
 
@@ -74,6 +77,99 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             ],
           ),
           const SizedBox(height: 24),
+          Consumer<SosController>(
+            builder: (context, sos, _) {
+              final isEmergency = sos.isEmergencyActive;
+              final alert = sos.activeAlert;
+              return Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isEmergency
+                      ? AppTheme.emergencyRedLight
+                      : AppTheme.campusGreenLight,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isEmergency
+                        ? AppTheme.emergencyRed
+                        : AppTheme.campusGreenBorder,
+                    width: 1.5,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: isEmergency
+                            ? AppTheme.emergencyRed
+                            : AppTheme.campusGreenDark,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        isEmergency ? Icons.warning_amber_rounded : Icons.shield,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isEmergency
+                                ? '🚨 CRITICAL CAMPUS SOS ALERT: ${alert?.type.title.toUpperCase() ?? "EMERGENCY"}'
+                                : 'Campus Safety & Emergency Dispatch System: Nominal',
+                            style: TextStyle(
+                              color: isEmergency
+                                  ? AppTheme.emergencyRed
+                                  : AppTheme.campusGreenDark,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            isEmergency
+                                ? 'Location: ${alert?.location} • Student: ${alert?.studentName} • Status: ${sos.status == SosDispatchStatus.enRoute ? "Unit En Route" : "Dispatched"}'
+                                : 'All emergency call stations, security units, and rapid dispatch servers responding normally.',
+                            style: TextStyle(
+                              color: isEmergency
+                                  ? AppTheme.emergencyRed.withOpacity(0.9)
+                                  : AppTheme.textSecondary,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isEmergency
+                            ? AppTheme.emergencyRed
+                            : AppTheme.primaryBlue,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        minimumSize: Size.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () => SosEmergencyDialog.show(context),
+                      child: Text(
+                        isEmergency ? 'Manage Incident' : 'SOS Controls',
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
 
           // 4 KPI Cards (PRD 7 & UX SCR-ADM-01)
           GridView.count(

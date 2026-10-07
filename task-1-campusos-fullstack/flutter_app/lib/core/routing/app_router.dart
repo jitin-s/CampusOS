@@ -18,6 +18,7 @@ import '../../features/admin/presentation/screens/admin_lost_found_screen.dart';
 import '../../features/admin/presentation/screens/admin_queues_screen.dart';
 import '../../features/admin/presentation/screens/admin_notices_screen.dart';
 import '../../features/admin/presentation/screens/admin_analytics_screen.dart';
+import '../../features/sos/presentation/screens/sos_emergency_screen.dart';
 
 GoRouter createRouter(AuthController authController) {
   return GoRouter(
@@ -78,6 +79,10 @@ GoRouter createRouter(AuthController authController) {
           GoRoute(
             path: '/student/activity',
             builder: (context, state) => const ActivityScreen(),
+          ),
+          GoRoute(
+            path: '/student/sos',
+            builder: (context, state) => const SosEmergencyScreen(),
           ),
         ],
       ),

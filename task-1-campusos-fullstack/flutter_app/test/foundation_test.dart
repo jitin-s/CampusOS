@@ -18,6 +18,8 @@ import 'package:campusos/features/lost_found/presentation/controllers/lost_found
 import 'package:campusos/features/notices/presentation/controllers/notice_controller.dart';
 import 'package:campusos/features/queue/presentation/controllers/queue_controller.dart';
 import 'package:campusos/features/rooms/presentation/controllers/campus_room_controller.dart';
+import 'package:campusos/features/sos/presentation/controllers/sos_controller.dart';
+import 'package:campusos/features/sos/domain/entities/sos_alert_entity.dart';
 
 void main() {
   group('CampusOS Foundation Tests', () {
@@ -356,4 +358,70 @@ void main() {
       },
     );
   });
+
+  group('Campus SOS Emergency System Tests', () {
+    test('SosController initializes with clean state and default directories', () {
+      final sos = SosController();
+      expect(sos.status, equals(SosDispatchStatus.idle));
+      expect(sos.isEmergencyActive, isFalse);
+      expect(sos.activeAlert, isNull);
+      expect(sos.emergencyContacts, isNotEmpty);
+      expect(sos.emergencyContacts.any((c) => c.phoneNumber.contains('911')), isTrue);
+      expect(sos.campusLocations, isNotEmpty);
+      expect(sos.selectedLocation, isNotEmpty);
+    });
+
+    test('SosController immediate dispatch creates active alert and updates status', () {
+      final sos = SosController();
+      sos.setSelectedType(SosEmergencyType.medical);
+      sos.setSelectedLocation('Main Engineering Complex - Lab 204');
+
+      sos.triggerImmediateSos(
+        studentName: 'Aarav Patel',
+        studentEmail: 'aarav@campus.edu',
+        notes: 'Asthma inhaler needed urgently',
+      );
+
+      expect(sos.status, equals(SosDispatchStatus.dispatched));
+      expect(sos.isEmergencyActive, isTrue);
+      expect(sos.activeAlert, isNotNull);
+      expect(sos.activeAlert?.type, equals(SosEmergencyType.medical));
+      expect(sos.activeAlert?.studentName, equals('Aarav Patel'));
+      expect(sos.activeAlert?.location, equals('Main Engineering Complex - Lab 204'));
+      expect(sos.activeAlert?.assignedUnit, contains('Quick Response Force'));
+
+      // Resolving emergency resets state
+      sos.resolveEmergency();
+      expect(sos.status, equals(SosDispatchStatus.idle));
+      expect(sos.isEmergencyActive, isFalse);
+      expect(sos.activeAlert, isNull);
+    });
+
+    test('SosController countdown can be canceled to prevent false alarms', () {
+      final sos = SosController();
+      sos.startSosCountdown(
+        studentName: 'Test Student',
+        studentEmail: 'test@campus.edu',
+      );
+
+      expect(sos.status, equals(SosDispatchStatus.countingDown));
+      expect(sos.countdownRemaining, inInclusiveRange(1, 3));
+
+      // Cancel countdown
+      sos.cancelCountdown();
+      expect(sos.status, equals(SosDispatchStatus.idle));
+      expect(sos.isEmergencyActive, isFalse);
+      expect(sos.activeAlert, isNull);
+    });
+
+    test('SosEmergencyType has proper icons, colors, and titles', () {
+      for (final type in SosEmergencyType.values) {
+        expect(type.title, isNotEmpty);
+        expect(type.description, isNotEmpty);
+        expect(type.icon, isNotNull);
+        expect(type.color, isNotNull);
+      }
+    });
+  });
 }
+
