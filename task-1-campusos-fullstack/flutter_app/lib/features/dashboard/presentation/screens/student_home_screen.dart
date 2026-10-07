@@ -49,6 +49,13 @@ class StudentHomeScreen extends StatelessWidget {
                 onTap: () => context.go('/student/queue'),
               ),
               _ActionCard(
+                icon: Icons.meeting_room_outlined,
+                title: 'Empty Rooms',
+                subtitle: 'Find Study Space',
+                color: const Color(0xFF0D9488),
+                onTap: () => context.go('/student/rooms'),
+              ),
+              _ActionCard(
                 icon: Icons.notifications_none,
                 title: 'Notices',
                 subtitle: 'Campus Bulletins',

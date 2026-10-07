@@ -23,6 +23,9 @@ import 'features/campus_fix/presentation/controllers/campus_fix_controller.dart'
 import 'features/lost_found/presentation/controllers/lost_found_controller.dart';
 import 'features/notices/presentation/controllers/notice_controller.dart';
 import 'features/queue/presentation/controllers/queue_controller.dart';
+import 'data/repositories/mock_campus_room_repository.dart';
+import 'domain/repositories/campus_room_repository.dart';
+import 'features/rooms/presentation/controllers/campus_room_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +39,7 @@ void main() async {
   final LostFoundRepository lostFoundRepository = SupabaseLostFoundRepository();
   final QueueRepository queueRepository = SupabaseQueueRepository();
   final NoticeRepository noticeRepository = SupabaseNoticeRepository();
+  final CampusRoomRepository roomRepository = MockCampusRoomRepository();
   final IntelligenceService intelligenceService = CampusIntelligenceClient();
 
   final AuthController authController = AuthController(
@@ -52,6 +56,9 @@ void main() async {
   );
   final NoticeController noticeController = NoticeController(
     repository: noticeRepository,
+  );
+  final CampusRoomController roomController = CampusRoomController(
+    repository: roomRepository,
   );
   final AdminDashboardController adminDashboardController =
       AdminDashboardController(
@@ -74,6 +81,9 @@ void main() async {
         ),
         ChangeNotifierProvider<QueueController>.value(value: queueController),
         ChangeNotifierProvider<NoticeController>.value(value: noticeController),
+        ChangeNotifierProvider<CampusRoomController>.value(
+          value: roomController,
+        ),
         ChangeNotifierProvider<AdminDashboardController>.value(
           value: adminDashboardController,
         ),

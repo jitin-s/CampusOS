@@ -12,6 +12,7 @@ import '../../features/lost_found/presentation/screens/lost_found_screen.dart';
 import '../../features/queue/presentation/screens/queue_screen.dart';
 import '../../features/notices/presentation/screens/notice_screen.dart';
 import '../../features/activity/presentation/screens/activity_screen.dart';
+import '../../features/rooms/presentation/screens/empty_rooms_screen.dart';
 import '../../features/admin/presentation/screens/admin_issues_screen.dart';
 import '../../features/admin/presentation/screens/admin_lost_found_screen.dart';
 import '../../features/admin/presentation/screens/admin_queues_screen.dart';
@@ -69,6 +70,10 @@ GoRouter createRouter(AuthController authController) {
           GoRoute(
             path: '/student/notices',
             builder: (context, state) => const NoticeScreen(),
+          ),
+          GoRoute(
+            path: '/student/rooms',
+            builder: (context, state) => const EmptyRoomsScreen(),
           ),
           GoRoute(
             path: '/student/activity',

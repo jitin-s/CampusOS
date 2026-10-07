@@ -10,12 +10,14 @@ import 'package:campusos/domain/entities/issue_entity.dart';
 import 'package:campusos/domain/entities/lost_found_entity.dart';
 import 'package:campusos/domain/entities/notice_entity.dart';
 import 'package:campusos/domain/entities/user_entity.dart';
+import 'package:campusos/data/repositories/mock_campus_room_repository.dart';
 import 'package:campusos/features/admin/presentation/controllers/admin_dashboard_controller.dart';
 import 'package:campusos/features/auth/presentation/controllers/auth_controller.dart';
 import 'package:campusos/features/campus_fix/presentation/controllers/campus_fix_controller.dart';
 import 'package:campusos/features/lost_found/presentation/controllers/lost_found_controller.dart';
 import 'package:campusos/features/notices/presentation/controllers/notice_controller.dart';
 import 'package:campusos/features/queue/presentation/controllers/queue_controller.dart';
+import 'package:campusos/features/rooms/presentation/controllers/campus_room_controller.dart';
 
 void main() {
   group('CampusOS Foundation Tests', () {
@@ -307,6 +309,50 @@ void main() {
           ),
           isTrue,
         );
+      },
+    );
+  });
+
+  group('Empty Rooms Vacancy Feature Tests', () {
+    test(
+      'CampusRoomController loads rooms and filters empty rooms correctly',
+      () async {
+        final repo = MockCampusRoomRepository();
+        final controller = CampusRoomController(repository: repo);
+
+        await controller.loadRooms('campus-alpha-001');
+
+        expect(controller.rooms, isNotEmpty);
+        expect(controller.buildings, contains('Academic Block A'));
+        expect(controller.buildings, contains('Academic Block B'));
+        expect(controller.buildings, contains('Central Library'));
+
+        // Check room structure
+        final room204 = controller.rooms.firstWhere(
+          (r) => r.roomNumber == '204',
+        );
+        expect(room204.building, equals('Academic Block B'));
+        expect(room204.capacity, equals(80));
+        expect(room204.isCurrentlyEmpty, isTrue);
+
+        // Filter by building
+        await controller.filterBuilding('campus-alpha-001', 'Academic Block A');
+        expect(
+          controller.rooms.every((r) => r.building == 'Academic Block A'),
+          isTrue,
+        );
+
+        // Filter by empty only
+        await controller.toggleOnlyEmpty('campus-alpha-001', true);
+        expect(
+          controller.rooms.every((r) => r.isCurrentlyEmpty),
+          isTrue,
+        );
+
+        // Timetable schedule checks
+        expect(room204.todaySchedule, isNotEmpty);
+        expect(room204.todaySchedule.any((slot) => slot.isOccupied), isTrue);
+        expect(room204.todaySchedule.any((slot) => !slot.isOccupied), isTrue);
       },
     );
   });
