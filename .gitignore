@@ -1,0 +1,21 @@
+# Environment and secrets
+.env
+.env*.local
+*.pem
+*.key
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
