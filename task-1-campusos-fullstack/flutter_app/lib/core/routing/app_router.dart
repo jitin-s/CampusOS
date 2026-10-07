@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/widgets/placeholder_screen.dart';
 import '../../features/admin/presentation/screens/admin_dashboard_screen.dart';
 import '../../features/admin/presentation/screens/admin_shell_screen.dart';
 import '../../features/auth/presentation/controllers/auth_controller.dart';
@@ -13,6 +12,11 @@ import '../../features/lost_found/presentation/screens/lost_found_screen.dart';
 import '../../features/queue/presentation/screens/queue_screen.dart';
 import '../../features/notices/presentation/screens/notice_screen.dart';
 import '../../features/activity/presentation/screens/activity_screen.dart';
+import '../../features/admin/presentation/screens/admin_issues_screen.dart';
+import '../../features/admin/presentation/screens/admin_lost_found_screen.dart';
+import '../../features/admin/presentation/screens/admin_queues_screen.dart';
+import '../../features/admin/presentation/screens/admin_notices_screen.dart';
+import '../../features/admin/presentation/screens/admin_analytics_screen.dart';
 
 GoRouter createRouter(AuthController authController) {
   return GoRouter(
@@ -82,43 +86,23 @@ GoRouter createRouter(AuthController authController) {
           ),
           GoRoute(
             path: '/admin/issues',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'Manage CampusFix Issues',
-              description: 'Review classified issues, assign departments and update statuses.',
-              icon: Icons.build_outlined,
-            ),
+            builder: (context, state) => const AdminIssuesScreen(),
           ),
           GoRoute(
             path: '/admin/lost-found',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'Lost & Found Claims',
-              description: 'Verify claims and coordinate item recoveries.',
-              icon: Icons.search_outlined,
-            ),
+            builder: (context, state) => const AdminLostFoundScreen(),
           ),
           GoRoute(
             path: '/admin/queues',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'Queue Management',
-              description: 'Open, close, and call tokens for campus counters.',
-              icon: Icons.people_outline,
-            ),
+            builder: (context, state) => const AdminQueuesScreen(),
           ),
           GoRoute(
             path: '/admin/notices',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'Publish Notices',
-              description: 'Compose and dispatch campus bulletins to students and faculty.',
-              icon: Icons.notifications_none,
-            ),
+            builder: (context, state) => const AdminNoticesScreen(),
           ),
           GoRoute(
             path: '/admin/analytics',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'Campus Intelligence & Analytics',
-              description: 'Resolution times, recovery rates, issue density and campus reliability score.',
-              icon: Icons.analytics_outlined,
-            ),
+            builder: (context, state) => const AdminAnalyticsScreen(),
           ),
         ],
       ),

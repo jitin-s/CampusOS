@@ -10,11 +10,14 @@ import 'data/repositories/supabase_issue_repository.dart';
 import 'data/repositories/supabase_lost_found_repository.dart';
 import 'data/repositories/supabase_notice_repository.dart';
 import 'data/repositories/supabase_queue_repository.dart';
+import 'data/services/campus_intelligence_client.dart';
 import 'domain/repositories/auth_repository.dart';
 import 'domain/repositories/issue_repository.dart';
 import 'domain/repositories/lost_found_repository.dart';
 import 'domain/repositories/notice_repository.dart';
 import 'domain/repositories/queue_repository.dart';
+import 'domain/services/intelligence_service.dart';
+import 'features/admin/presentation/controllers/admin_dashboard_controller.dart';
 import 'features/auth/presentation/controllers/auth_controller.dart';
 import 'features/campus_fix/presentation/controllers/campus_fix_controller.dart';
 import 'features/lost_found/presentation/controllers/lost_found_controller.dart';
@@ -33,6 +36,7 @@ void main() async {
   final LostFoundRepository lostFoundRepository = SupabaseLostFoundRepository();
   final QueueRepository queueRepository = SupabaseQueueRepository();
   final NoticeRepository noticeRepository = SupabaseNoticeRepository();
+  final IntelligenceService intelligenceService = CampusIntelligenceClient();
 
   final AuthController authController = AuthController(
     authRepository: authRepository,
@@ -49,6 +53,14 @@ void main() async {
   final NoticeController noticeController = NoticeController(
     repository: noticeRepository,
   );
+  final AdminDashboardController adminDashboardController =
+      AdminDashboardController(
+        issueRepository: issueRepository,
+        lostFoundRepository: lostFoundRepository,
+        queueRepository: queueRepository,
+        noticeRepository: noticeRepository,
+        intelligenceService: intelligenceService,
+      );
 
   runApp(
     MultiProvider(
@@ -62,6 +74,9 @@ void main() async {
         ),
         ChangeNotifierProvider<QueueController>.value(value: queueController),
         ChangeNotifierProvider<NoticeController>.value(value: noticeController),
+        ChangeNotifierProvider<AdminDashboardController>.value(
+          value: adminDashboardController,
+        ),
       ],
       child: CampusOSApp(authController: authController),
     ),
