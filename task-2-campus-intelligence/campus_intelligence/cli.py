@@ -9,11 +9,21 @@ import json
 import argparse
 from typing import Dict, Any
 
+# Ensure UTF-8 stdout encoding on Windows consoles
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 from campus_intelligence.matching.service import MatchingService
 from campus_intelligence.classification.service import ClassificationService
 from campus_intelligence.priority.service import PriorityService
 from campus_intelligence.clustering.service import ClusteringService
 from campus_intelligence.analytics.service import AnalyticsService
+
+
+from campus_intelligence.matching.rules import MatchWeights
 
 
 def handle_match(args: argparse.Namespace) -> None:
@@ -26,9 +36,14 @@ def handle_match(args: argparse.Namespace) -> None:
     lost = data.get("lost_item", {})
     found = data.get("found_item", {})
     threshold = int(data.get("threshold", 50))
+    weights_dict = data.get("weights")
+    weights = MatchWeights(**weights_dict) if isinstance(weights_dict, dict) else None
 
-    res = service.calculate_match(lost, found, threshold=threshold)
-    print(json.dumps(res.to_dict(), indent=2))
+    res = service.calculate_match(lost, found, threshold=threshold, weights=weights)
+    if getattr(args, "report", False):
+        print(MatchingService.format_explanation_report(res))
+    else:
+        print(json.dumps(res.to_dict(), indent=2))
 
 
 def handle_classify(args: argparse.Namespace) -> None:
@@ -97,6 +112,7 @@ def main() -> None:
 
     p_match = subparsers.add_parser("match", help="Match lost and found items")
     p_match.add_argument("--input", "-i", type=str, help="JSON input string (or pipe via stdin)")
+    p_match.add_argument("--report", "-r", action="store_true", help="Print human-readable text report")
     p_match.set_defaults(func=handle_match)
 
     p_classify = subparsers.add_parser("classify", help="Classify an issue")
