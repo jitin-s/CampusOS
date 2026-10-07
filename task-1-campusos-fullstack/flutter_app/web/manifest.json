@@ -1,0 +1,35 @@
+{
+    "name": "CampusOS",
+    "short_name": "CampusOS",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0B192C",
+    "theme_color": "#1E3E62",
+    "description": "Campus operating layer for student workflows and campus intelligence.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/Icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/Icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
