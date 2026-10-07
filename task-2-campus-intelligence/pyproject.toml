@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "campus-intelligence"
+version = "1.0.0"
+description = "CampusOS Intelligence Engine - Explainable matching, classification, priority, clustering, and analytics"
+authors = [{ name = "Kartike", email = "kartike@campusos.internal" }]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+campus-intelligence = "campus_intelligence.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["campus_intelligence*"]
