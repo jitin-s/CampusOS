@@ -8,6 +8,11 @@ import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/dashboard/presentation/screens/student_home_screen.dart';
 import '../../features/dashboard/presentation/screens/student_shell_screen.dart';
+import '../../features/campus_fix/presentation/screens/campus_fix_screen.dart';
+import '../../features/lost_found/presentation/screens/lost_found_screen.dart';
+import '../../features/queue/presentation/screens/queue_screen.dart';
+import '../../features/notices/presentation/screens/notice_screen.dart';
+import '../../features/activity/presentation/screens/activity_screen.dart';
 
 GoRouter createRouter(AuthController authController) {
   return GoRouter(
@@ -47,47 +52,23 @@ GoRouter createRouter(AuthController authController) {
           ),
           GoRoute(
             path: '/student/campus-fix',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'CampusFix',
-              description:
-                  'Report and track campus maintenance and facility issues.',
-              icon: Icons.build_outlined,
-            ),
+            builder: (context, state) => const CampusFixScreen(),
           ),
           GoRoute(
             path: '/student/lost-found',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'Lost & Found',
-              description:
-                  'Smart item matching, claims and ownership verification.',
-              icon: Icons.search_outlined,
-            ),
+            builder: (context, state) => const LostFoundScreen(),
           ),
           GoRoute(
             path: '/student/queue',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'Digital Queue',
-              description:
-                  'Join service queues and view real-time token progress.',
-              icon: Icons.people_outline,
-            ),
+            builder: (context, state) => const QueueScreen(),
           ),
           GoRoute(
             path: '/student/notices',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'Campus Notices',
-              description:
-                  'Important announcements, exams, and deadline bulletins.',
-              icon: Icons.notifications_none,
-            ),
+            builder: (context, state) => const NoticeScreen(),
           ),
           GoRoute(
             path: '/student/activity',
-            builder: (context, state) => const PlaceholderScreen(
-              title: 'My Activity',
-              description: 'Unified timeline of your campus requests and status updates.',
-              icon: Icons.history,
-            ),
+            builder: (context, state) => const ActivityScreen(),
           ),
         ],
       ),

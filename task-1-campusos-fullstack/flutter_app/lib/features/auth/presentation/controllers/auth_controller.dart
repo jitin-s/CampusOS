@@ -13,7 +13,8 @@ class AuthController extends ChangeNotifier {
   String? _errorMessage;
 
   AuthController({required AuthRepository authRepository})
-    : _authRepository = authRepository { // ignore: prefer_initializing_formals
+    : _authRepository = authRepository {
+    // ignore: prefer_initializing_formals
     _currentUser = _authRepository.currentUser;
     _authRepository.authStateChanges.listen((user) {
       _currentUser = user;
