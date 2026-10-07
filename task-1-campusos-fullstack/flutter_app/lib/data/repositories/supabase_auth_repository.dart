@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 import '../../core/network/supabase_client_manager.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
