@@ -32,6 +32,7 @@ from campus_intelligence.core.interfaces import (
     IClusteringService,
     IAnalyticsService,
 )
+from campus_intelligence.matching.rules import MatchWeights
 from campus_intelligence.matching.service import MatchingService
 from campus_intelligence.classification.service import ClassificationService
 from campus_intelligence.priority.service import PriorityService
@@ -45,6 +46,7 @@ __all__ = [
     "IssueCategory",
     "CampusDepartment",
     "IssueStatus",
+    "MatchWeights",
     # Models
     "LostItem",
     "FoundItem",

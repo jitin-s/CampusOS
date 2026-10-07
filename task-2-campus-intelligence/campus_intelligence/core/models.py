@@ -16,6 +16,7 @@ class LostItem:
     item_name: str
     category: str
     campus_id: str = "main-campus"
+    item_type: Optional[str] = None
     brand: Optional[str] = None
     color: Optional[str] = None
     location: Optional[str] = None
@@ -23,17 +24,28 @@ class LostItem:
     description: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self):
+        # Synchronize item_name and item_type if one is missing
+        if not self.item_type and self.item_name:
+            self.item_type = self.item_name
+        elif not self.item_name and self.item_type:
+            self.item_name = self.item_type
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "LostItem":
+        item_name = str(data.get("item_name") or data.get("item_type") or "")
+        item_type = data.get("item_type") or data.get("item_name")
+        occurred_at = data.get("occurred_at") or data.get("date_time")
         return cls(
             id=str(data.get("id", "")),
-            item_name=str(data.get("item_name", "")),
+            item_name=item_name,
             category=str(data.get("category", "")),
             campus_id=str(data.get("campus_id", "main-campus")),
+            item_type=str(item_type) if item_type else None,
             brand=data.get("brand"),
             color=data.get("color"),
             location=data.get("location"),
-            occurred_at=data.get("occurred_at"),
+            occurred_at=str(occurred_at) if occurred_at else None,
             description=data.get("description"),
             metadata=data.get("metadata", {}) or {},
         )
@@ -49,6 +61,7 @@ class FoundItem:
     item_name: str
     category: str
     campus_id: str = "main-campus"
+    item_type: Optional[str] = None
     brand: Optional[str] = None
     color: Optional[str] = None
     location: Optional[str] = None
@@ -56,17 +69,28 @@ class FoundItem:
     description: Optional[str] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+    def __post_init__(self):
+        # Synchronize item_name and item_type if one is missing
+        if not self.item_type and self.item_name:
+            self.item_type = self.item_name
+        elif not self.item_name and self.item_type:
+            self.item_name = self.item_type
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "FoundItem":
+        item_name = str(data.get("item_name") or data.get("item_type") or "")
+        item_type = data.get("item_type") or data.get("item_name")
+        occurred_at = data.get("occurred_at") or data.get("date_time")
         return cls(
             id=str(data.get("id", "")),
-            item_name=str(data.get("item_name", "")),
+            item_name=item_name,
             category=str(data.get("category", "")),
             campus_id=str(data.get("campus_id", "main-campus")),
+            item_type=str(item_type) if item_type else None,
             brand=data.get("brand"),
             color=data.get("color"),
             location=data.get("location"),
-            occurred_at=data.get("occurred_at"),
+            occurred_at=str(occurred_at) if occurred_at else None,
             description=data.get("description"),
             metadata=data.get("metadata", {}) or {},
         )
@@ -79,12 +103,29 @@ class FoundItem:
 class MatchResult:
     """Explainable result from Lost & Found matching."""
     score: int  # 0 to 100
-    confidence: str  # none, low, medium, high, very_high
+    confidence: str  # e.g. "HIGH CONFIDENCE", "HIGH", "MEDIUM", etc.
     factors: List[str]  # e.g. ["category_match", "brand_match", ...]
     breakdown: Dict[str, float]  # factor -> points awarded
     is_match: bool  # whether threshold is met
+    recommendation: str = "NO MATCH"  # STRONG MATCH, POTENTIAL MATCH, etc.
+    factor_scores: Dict[str, float] = field(default_factory=dict)
+    matching_factors: List[str] = field(default_factory=list)
+    human_readable_explanation: List[str] = field(default_factory=list)
     lost_item_id: Optional[str] = None
     found_item_id: Optional[str] = None
+
+    def __post_init__(self):
+        # Keep factor_scores and breakdown synchronized
+        if not self.factor_scores and self.breakdown:
+            self.factor_scores = self.breakdown
+        elif not self.breakdown and self.factor_scores:
+            self.breakdown = self.factor_scores
+
+        # Keep matching_factors and factors synchronized
+        if not self.matching_factors and self.factors:
+            self.matching_factors = self.factors
+        elif not self.factors and self.matching_factors:
+            self.factors = self.matching_factors
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

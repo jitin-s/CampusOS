@@ -1,25 +1,20 @@
 # CampusOS — Campus Intelligence Engine (`task-2-campus-intelligence`)
 
 **Owner:** Kartike (Task-2 Lead)\
-**Phase:** Phase 1 — Intelligence Foundation\
-**Status:** Authoritative Foundation Complete & Tested
+**Current Phase:** Phase 2 — Smart Lost & Found Matching\
+**Status:** Authoritative Foundation & Smart Matching Engine Complete & Tested (36/36 Unit Tests Passing)
 
 ---
 
 ## 1. Overview & Purpose
 
-The Campus Intelligence Engine provides deterministic, explainable, and lightweight intelligence capabilities for CampusOS without introducing black-box ML models or heavy external dependencies.
+The Campus Intelligence Engine provides deterministic, explainable, and lightweight intelligence capabilities for CampusOS without introducing black-box ML models, external cloud dependencies, or heavy infrastructure.
 
-It serves as the decision and analytics brain behind:
-1. **Lost & Found Smart Matching:** Explainable similarity scoring across 6 weighted attributes.
-2. **Issue Classification & Routing:** Classifying natural-language reports into standard categories and assigning responsible departments.
-3. **Priority Scoring:** Transparent point-based assessment based on severity, location criticality, population impact, urgency, and recurrence.
-4. **Problem Clustering:** Grouping localized and recurring campus failures into operational hotspots.
-5. **Operational Analytics:** Calculating campus reliability index, SLA resolution times, and recovery rates.
+In **Phase-2: Smart Lost & Found Matching**, we implement an explainable deterministic matching engine that pairs student lost reports with found items based on configurable weighted criteria, detects explicit conflicts, and outputs human-readable verification explanations.
 
 ---
 
-## 2. Architecture & SOLID Principles
+## 2. Architecture & Directory Layout
 
 The module strictly follows the architecture defined in `docs/02_SRD.md` and `docs/03_ARCHITECTURE.md`:
 
@@ -30,233 +25,259 @@ task-2-campus-intelligence/
 │   │   ├── types.py          # Enums (PriorityLevel, MatchConfidence, IssueCategory, etc.)
 │   │   ├── models.py         # DTOs (LostItem, FoundItem, MatchResult, IssueRecord, etc.)
 │   │   └── interfaces.py      # Abstract Base Classes (IMatchingService, etc.)
-│   ├── matching/             # Lost & Found Smart Matching Subsystem
-│   │   ├── rules.py          # Deterministic feature weights & token overlap rules
-│   │   └── service.py        # MatchingService
-│   ├── classification/       # Issue Classification & Routing Subsystem
+│   ├── matching/             # Smart Lost & Found Matching Subsystem (Phase-2)
+│   │   ├── rules.py          # Configurable MatchWeights, attribute evaluators & explanations
+│   │   ├── service.py        # MatchingService implementing IMatchingService
+│   │   └── demo_data.py      # Curated campus demo datasets for Lost & Found
+│   ├── classification/       # Issue Classification & Routing Subsystem (Phase-1)
 │   │   ├── rules.py          # Keyword taxonomy & location heuristics
 │   │   └── service.py        # ClassificationService
-│   ├── priority/             # Priority Evaluation Subsystem
+│   ├── priority/             # Priority Evaluation Subsystem (Phase-1)
 │   │   ├── scoring.py        # Transparent point formulas & clamp logic
 │   │   └── service.py        # PriorityService
-│   ├── clustering/           # Problem Clustering Subsystem
+│   ├── clustering/           # Problem Clustering Subsystem (Phase-1)
 │   │   ├── detector.py       # Spatio-temporal heuristics & topic generation
 │   │   └── service.py        # ClusteringService
-│   ├── analytics/            # Operational Analytics Subsystem
+│   ├── analytics/            # Operational Analytics Subsystem (Phase-1)
 │   │   ├── metrics.py        # SLA, resolution rates & campus reliability formulas
 │   │   └── service.py        # AnalyticsService
-│   └── cli.py                # Unified JSON CLI for cross-runtime invocation
-├── tests/                    # 27 comprehensive unit tests (100% pass)
+│   └── cli.py                # Unified JSON CLI with --report text formatting
+├── tests/                    # 36 comprehensive unit tests (100% pass)
+│   ├── test_smart_matching.py # Phase-2 Smart Matching test suite (6 scenarios)
+│   ├── test_matching.py       # Phase-1 baseline matching tests
+│   ├── test_classification.py # Phase-1 classification tests
+│   ├── test_priority.py       # Phase-1 priority tests
+│   ├── test_clustering.py     # Phase-1 clustering tests
+│   ├── test_analytics.py      # Phase-1 analytics tests
+│   └── test_edge_cases.py     # Phase-1 boundary and error handling tests
 └── pyproject.toml
 ```
 
-### SOLID Compliance:
-- **Single Responsibility:** Each subsystem has one distinct responsibility.
-- **Open / Closed:** New classification keywords or scoring dimensions can be configured without rewriting service workflows.
-- **Liskov Substitution:** All services implement strict abstract interfaces (`IMatchingService`, `IClassificationService`, etc.).
-- **Interface Segregation:** Focused, fine-grained interfaces; callers depend only on what they use.
-- **Dependency Inversion:** High-level services depend on abstractions in `core.interfaces`, completely decoupled from databases, UI, and networks.
+---
+
+## 3. Smart Matching Engine (Phase-2)
+
+### 3.1 Algorithm & Scoring Breakdown
+
+The engine evaluates 7 distinct dimensions with configurable weights summing to 100 points:
+
+| Dimension | Default Weight | Matching Heuristic | Explanation Format |
+|---|:---:|---|---|
+| **Category** | 25.0 | Exact match, synonym taxonomy (`electronics`/`gadgets`), or partial | `✓ Category matches (Electronics)` |
+| **Item Type** | 20.0 | Exact or token overlap (e.g. `Scientific Calculator` vs `Calculator`) | `✓ Item type matches (Scientific Calculator)` |
+| **Brand** | 15.0 | Exact name, alias containment, conflict detection (`Apple` vs `Dell`) | `✓ Brand matches (Casio)` or `✗ Brand conflicts` |
+| **Color** | 15.0 | Exact color, multi-color intersection (`Black and Silver` vs `Black`) | `✓ Color matches (Black)` or `✗ Color differs` |
+| **Location** | 10.0 | Same room/venue, spatial token overlap, or same campus zone | `✓ Location is nearby (Central Library)` |
+| **Time Proximity** | 10.0 | $\le 4\text{h}$ (100%), $\le 24\text{h}$ (85%), $\le 3\text{d}$ (70%), $\le 7\text{d}$ (45%) | `✓ Time is very close (within 2h)` |
+| **Description** | 5.0 | Jaccard token overlap of distinctive descriptors and keywords | `✓ Description details corroborate match` |
+
+#### Conflict Detection & Hard Guards:
+- **Category & Type Mismatch Guard:** If both Category and Item Type completely conflict (e.g., *Umbrella* vs. *Laptop*), the maximum possible score is clamped to **15.0 points** regardless of location or time.
+- **Brand Conflict Penalty:** If both items explicitly specify brands and they conflict (e.g., *Apple* vs. *Dell* or *Casio* vs. *Texas Instruments*), a **15.0-point penalty** is subtracted and recommendation is capped.
 
 ---
 
-## 3. Public Service Interfaces
+### 3.2 Output Recommendation & Confidence Tiers
 
-### 3.1 `MatchingService` (`IMatchingService`)
+| Score Range | Recommendation | Confidence Rating |
+|:---:|:---:|:---:|
+| **80 – 100** | `STRONG MATCH` | `HIGH CONFIDENCE` / `VERY HIGH` |
+| **60 – 79** | `POTENTIAL MATCH` | `HIGH CONFIDENCE` / `MEDIUM` |
+| **40 – 59** | `POSSIBLE MATCH` | `MEDIUM CONFIDENCE` |
+| **20 – 39** | `WEAK MATCH` | `LOW CONFIDENCE` |
+| **0 – 19** | `NO MATCH` | `NO CONFIDENCE` |
+
+---
+
+### 3.3 Public Interface (`IMatchingService`)
 
 ```python
-from campus_intelligence import MatchingService, LostItem, FoundItem
+from campus_intelligence import MatchingService, MatchWeights, LostItem, FoundItem
 
-service = MatchingService()
+# Initialize service with default or custom weights
+service = MatchingService(default_weights=MatchWeights())
+
+# 1. Calculate match between Lost and Found items
 result = service.calculate_match(lost_item, found_item, threshold=50)
+
+# 2. Rank candidates from candidate pool
+ranked_matches = service.find_matches_for_lost(lost_item, found_items, limit=5)
+
+# 3. Format human-readable text report
+text_report = MatchingService.format_explanation_report(result)
 ```
 
-**Output Structure (`MatchResult`):**
+---
+
+### 3.4 Sample Outputs
+
+#### Example A: Exact Match (Casio Calculator in Library)
+
+**Formatted Human-Readable Explanation:**
+```text
+95% — VERY HIGH CONFIDENCE
+
+✓ Category matches (Electronics)
+✓ Item type matches (Scientific Calculator)
+✓ Brand matches (Casio)
+✓ Color matches (Black)
+✓ Location is nearby (Central Library 2nd Floor)
+✓ Time is very close (within 1h)
+✓ Description details strongly corroborate match
+
+Recommendation:
+STRONG MATCH
+```
+
+**JSON Output Structure (`MatchResult`):**
 ```json
 {
-  "score": 90,
+  "score": 95,
   "confidence": "very_high",
+  "recommendation": "STRONG MATCH",
   "factors": [
     "category_match",
+    "item_type_match",
     "brand_match",
     "color_match",
     "location_proximity",
+    "time_proximity",
     "description_similarity"
   ],
   "breakdown": {
-    "category": 30.0,
-    "brand": 20.0,
+    "category": 25.0,
+    "item_type": 20.0,
+    "brand": 15.0,
     "color": 15.0,
-    "location": 15.0,
-    "time": 0.0,
-    "description_similarity": 10.0
+    "location": 10.0,
+    "time": 10.0,
+    "description": 5.0
   },
   "is_match": true,
-  "lost_item_id": "lost-101",
-  "found_item_id": "found-201"
-}
-```
-
----
-
-### 3.2 `ClassificationService` (`IClassificationService`)
-
-```python
-from campus_intelligence import ClassificationService
-
-service = ClassificationService()
-result = service.classify_issue(
-    title="Projector not working in B204",
-    description="HDMI cord broken and cannot project slides",
-    location="Room B204"
-)
-```
-
-**Output Structure (`ClassificationResult`):**
-```json
-{
-  "category": "equipment",
-  "subcategory": "projector",
-  "department": "IT",
-  "confidence": 0.76,
-  "matched_keywords": ["projector", "hdmi"]
-}
-```
-
----
-
-### 3.3 `PriorityService` (`IPriorityService`)
-
-```python
-from campus_intelligence import PriorityService
-
-service = PriorityService()
-result = service.calculate_priority(
-    category="equipment",
-    severity="high",
-    location="Room B204",
-    affected_users=60,
-    urgency="today",
-    recurrence_count=2
-)
-```
-
-**Output Structure (`PriorityResult`):**
-```json
-{
-  "priority": "HIGH",
-  "score": 65,
-  "explanation": [
-    "High severity (+30 pts)",
-    "General campus location: 'Room B204' (+5 pts)",
-    "High classroom/floor impact: 60 affected users (+15 pts)",
-    "Same-day urgency declared (+10 pts)",
-    "Recurring issue detected: reported 2 times (+5 pts)"
-  ],
-  "breakdown": {
-    "severity": 30,
-    "location": 5,
-    "affected_users": 15,
-    "urgency": 10,
-    "recurrence": 5
-  }
-}
-```
-
----
-
-### 3.4 `ClusteringService` (`IClusteringService`)
-
-```python
-from campus_intelligence import ClusteringService, IssueRecord
-
-service = ClusteringService()
-clusters = service.cluster_issues(issues_list, time_window_hours=72)
-```
-
-**Output Structure (`List[IssueCluster]`):**
-```json
-[
-  {
-    "cluster_id": "cluster-001",
-    "topic": "Recurring Projector Issues in Room B204 (3 reports)",
-    "location": "Room B204",
-    "primary_category": "equipment",
-    "issue_count": 3,
-    "issue_ids": ["iss-1", "iss-2", "iss-3"],
-    "is_recurring": true,
-    "severity_level": "HIGH"
-  }
-]
-```
-
----
-
-### 3.5 `AnalyticsService` (`IAnalyticsService`)
-
-```python
-from campus_intelligence import AnalyticsService
-
-service = AnalyticsService()
-analytics = service.calculate_campus_analytics(issues, lost_items, found_items)
-```
-
-**Output Structure (`CampusAnalytics`):**
-```json
-{
-  "total_issues": 15,
-  "active_issues": 3,
-  "resolved_issues": 12,
-  "resolution_rate": 80.0,
-  "average_resolution_time_hours": 3.8,
-  "lost_found_recovery_rate": 60.0,
-  "category_distribution": { "equipment": 8, "wifi": 4, "electrical": 3 },
-  "location_distribution": { "Room B204": 5, "Library": 6, "Hostel 3": 4 },
-  "department_performance": {
-    "IT": { "total": 12, "resolved": 10, "active": 2 }
+  "factor_scores": {
+    "category": 25.0,
+    "item_type": 20.0,
+    "brand": 15.0,
+    "color": 15.0,
+    "location": 10.0,
+    "time": 10.0,
+    "description": 5.0
   },
-  "recurring_clusters_count": 1,
-  "campus_reliability_score": 83.0
+  "matching_factors": [
+    "category_match",
+    "item_type_match",
+    "brand_match",
+    "color_match",
+    "location_proximity",
+    "time_proximity",
+    "description_similarity"
+  ],
+  "human_readable_explanation": [
+    "✓ Category matches (Electronics)",
+    "✓ Item type matches (Scientific Calculator)",
+    "✓ Brand matches (Casio)",
+    "✓ Color matches (Black)",
+    "✓ Location is nearby (Central Library 2nd Floor)",
+    "✓ Time is very close (within 1h)",
+    "✓ Description details strongly corroborate match"
+  ],
+  "lost_item_id": "lost-001",
+  "found_item_id": "found-001"
 }
 ```
 
----
+#### Example B: Conflicting Information (iPhone vs. Dell Charger)
+```text
+30% — LOW CONFIDENCE
 
-## 4. CLI Execution (Cross-Runtime Integration)
+✓ Category matches (Electronics)
+✗ Item type conflicts (Phone vs Charger)
+✗ Brand conflicts (Apple vs Dell)
+✗ Color differs (Purple vs Black)
+✓ Location is nearby (Lecture Hall 3)
+✓ Time is very close (within 1h)
+— No distinctive description overlap
 
-External clients (such as Flutter local backend scripts or CI/CD pipelines) can invoke any service via CLI:
-
-```bash
-# Issue classification
-python -m campus_intelligence.cli classify --input '{"title": "Projector broken", "description": "HDMI port faulty", "location": "B204"}'
-
-# Priority scoring
-python -m campus_intelligence.cli priority --input '{"category": "electrical", "severity": "critical", "location": "Server Room", "affected_users": 150, "urgency": "immediate"}'
-
-# Lost & Found matching
-python -m campus_intelligence.cli match --input '{"lost_item": {...}, "found_item": {...}}'
-
-# Issue clustering
-python -m campus_intelligence.cli cluster --input '{"issues": [...]}'
-
-# Campus Analytics
-python -m campus_intelligence.cli analytics --input '{"issues": [...], "lost_items": [...], "found_items": [...]}'
+Recommendation:
+NO MATCH
 ```
 
 ---
 
-## 5. Integration Guide for Task-1 (Jitin / Full-Stack)
+## 4. Test Scenarios (36 / 36 Passing)
 
-1. **Clean Separation:** Task-1 never calls ML models or raw math in UI widgets. Call `MatchingService` / `ClassificationService` through an application use-case / repository boundary.
-2. **Data Formats:** Services accept either Python dictionaries or strongly typed `dataclass` models (`LostItem`, `FoundItem`, `IssueRecord`). Every result provides a `.to_dict()` method for easy JSON serialization.
-3. **Graceful Degradation:** If an intelligence service call times out or encounters invalid inputs, it falls back safely (e.g. classification returns `other` / `General Administration`; matching returns `is_match: False` with zero score) to satisfy Principle 18 (Graceful Failure) of `docs/03_ARCHITECTURE.md`.
+The test suite in [`tests/test_smart_matching.py`](file:///d:/CampusOS/CampusOS/task-2-campus-intelligence/tests/test_smart_matching.py) validates the 6 required scenarios:
 
----
+1. **Exact match:** Casio fx-991EX Calculator lost in Library vs. found in Library ($\ge 90\%$, `STRONG MATCH`).
+2. **Strong partial match:** Apple MacBook Air Silver in B204 lost 1.8 days before found report ($80-94\%$, `STRONG MATCH`).
+3. **Weak match:** Personal Water Bottle with unknown brand and 6-day gap ($40-59\%$, `POSSIBLE MATCH`).
+4. **Different item:** Decathlon Rain Umbrella vs. Dell Laptop in Library ($< 20\%$, `NO MATCH`, `is_match: False`).
+5. **Missing fields:** Brass keys with omitted brand and color; handles gracefully without exceptions.
+6. **Conflicting information:** Apple iPhone vs. Dell Charger in Lecture Hall 3; detects brand conflict penalty and flags `✗ Brand conflicts`.
 
-## 6. Running Tests
-
-Run all 27 unit tests using Python standard library `unittest` (no pip installs needed):
-
+Run the full suite with:
 ```bash
 cd task-2-campus-intelligence
 python -m unittest discover -s tests -v
 ```
+
+---
+
+## 5. Demo Dataset
+
+A campus dataset is provided in [`campus_intelligence/matching/demo_data.py`](file:///d:/CampusOS/CampusOS/task-2-campus-intelligence/campus_intelligence/matching/demo_data.py):
+```python
+from campus_intelligence.matching.demo_data import get_demo_dataset
+
+lost_items, found_items = get_demo_dataset()
+```
+Contains realistic campus items:
+- Casio Scientific Calculators
+- Apple MacBook Air laptops
+- Hydro Flask insulated bottles
+- Dorm keys
+- Decathlon umbrellas
+- iPhones & Dell chargers
+
+---
+
+## 6. Integration Instructions for Jitin (Task-1 Lead)
+
+1. **CLI / Subprocess Integration:**  
+   Task-1 can query matches over standard JSON stdin/stdout:
+   ```bash
+   python -m campus_intelligence.cli match --input '{"lost_item": {...}, "found_item": {...}}'
+   ```
+   Or generate human-readable explanations directly:
+   ```bash
+   python -m campus_intelligence.cli match --input '{"lost_item": {...}, "found_item": {...}}' --report
+   ```
+
+2. **Custom Weights:**  
+   To prioritize specific attributes (e.g. strict brand matching for electronics):
+   ```json
+   {
+     "lost_item": {...},
+     "found_item": {...},
+     "weights": {
+       "category": 20.0,
+       "item_type": 20.0,
+       "brand": 30.0,
+       "color": 15.0,
+       "location": 5.0,
+       "time": 5.0,
+       "description": 5.0
+     }
+   }
+   ```
+
+3. **Ownership Verification Handshake:**  
+   When `result.recommendation == "STRONG MATCH"` (score $\ge 80$), Task-1 should proceed to the **Ownership Verification** step per Section 4 of `docs/02_SRD.md`.
+
+---
+
+## 7. Limitations & Known Boundaries
+
+1. **Deterministic Heuristics:** Matches are calculated via weighted attribute comparison and string tokenization (Jaccard similarity). It intentionally avoids heavy neural embeddings (e.g. BERT/CLIP) to ensure instant execution, zero cloud cost, and explainability.
+2. **Date Boundaries:** Time proximity uses standard timestamps; missing timestamps on found reports receive 0 time points without penalizing other matching dimensions.
+3. **Spelling Variations:** Handles case, punctuation, and known category synonyms; severe misspellings (e.g. 3+ character typos in brand names) may lower brand score.
