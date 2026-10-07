@@ -1,0 +1,480 @@
+{
+  "campuses": [
+    {
+      "id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Apex Institute of Technology (Main Campus)",
+      "code": "AIT-MAIN",
+      "active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    },
+    {
+      "id": "c0000002-0000-0000-0000-000000000002",
+      "name": "Apex Institute of Technology (North Campus)",
+      "code": "AIT-NORTH",
+      "active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  ],
+  "departments": [
+    {
+      "id": "dept-it-main",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "IT & Audio-Visual Support",
+      "code": "IT-AV"
+    },
+    {
+      "id": "dept-fac-main",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Facilities & Maintenance",
+      "code": "FAC-MAINT"
+    },
+    {
+      "id": "dept-acc-main",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Finance & Accounts Office",
+      "code": "FIN-ACC"
+    },
+    {
+      "id": "dept-reg-main",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Student Registrar & Academic Affairs",
+      "code": "REG-ACAD"
+    },
+    {
+      "id": "dept-lib-main",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Central Library Services",
+      "code": "LIB-SRV"
+    },
+    {
+      "id": "dept-fac-north",
+      "campus_id": "c0000002-0000-0000-0000-000000000002",
+      "name": "North Campus Facilities",
+      "code": "FAC-NORTH"
+    }
+  ],
+  "locations": [
+    {
+      "id": "loc-lib-201",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Central Library - 2nd Floor (Reading Hall)",
+      "building": "Central Library",
+      "floor": "2",
+      "room_number": "201"
+    },
+    {
+      "id": "loc-acad-204",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Academic Block B - Lecture Hall 204",
+      "building": "Academic Block B",
+      "floor": "2",
+      "room_number": "204"
+    },
+    {
+      "id": "loc-acad-101",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Academic Block A - Computer Lab 1",
+      "building": "Academic Block A",
+      "floor": "1",
+      "room_number": "101"
+    },
+    {
+      "id": "loc-host-c3",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Hostel Block C - 3rd Floor Washroom",
+      "building": "Hostel Block C",
+      "floor": "3",
+      "room_number": "300"
+    },
+    {
+      "id": "loc-admin-10",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Administrative Building - Room 10 (Accounts Desk)",
+      "building": "Admin Building",
+      "floor": "1",
+      "room_number": "10"
+    },
+    {
+      "id": "loc-north-101",
+      "campus_id": "c0000002-0000-0000-0000-000000000002",
+      "name": "North Campus Engineering Lab 1",
+      "building": "North Block 1",
+      "floor": "1",
+      "room_number": "101"
+    }
+  ],
+  "users": [
+    {
+      "id": "usr-student-001",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "role": "student",
+      "full_name": "Arjun Mehta",
+      "email": "student@campusos.internal",
+      "department_id": "dept-reg-main",
+      "created_at": "2026-02-01T08:00:00Z"
+    },
+    {
+      "id": "usr-student-002",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "role": "student",
+      "full_name": "Priya Sharma",
+      "email": "student2@campusos.internal",
+      "department_id": "dept-reg-main",
+      "created_at": "2026-02-01T08:30:00Z"
+    },
+    {
+      "id": "usr-student-003",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "role": "student",
+      "full_name": "Vikram Patel",
+      "email": "student3@campusos.internal",
+      "department_id": "dept-reg-main",
+      "created_at": "2026-02-01T08:45:00Z"
+    },
+    {
+      "id": "usr-faculty-001",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "role": "faculty",
+      "full_name": "Dr. Rajesh Rao",
+      "email": "faculty@campusos.internal",
+      "department_id": "dept-it-main",
+      "created_at": "2026-01-15T09:00:00Z"
+    },
+    {
+      "id": "usr-staff-001",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "role": "staff",
+      "full_name": "Suresh Kumar",
+      "email": "staff_tech@campusos.internal",
+      "department_id": "dept-it-main",
+      "created_at": "2026-01-10T09:00:00Z"
+    },
+    {
+      "id": "usr-admin-001",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "role": "admin",
+      "full_name": "Anita Deshmukh",
+      "email": "admin@campusos.internal",
+      "department_id": "dept-fac-main",
+      "created_at": "2026-01-01T09:00:00Z"
+    },
+    {
+      "id": "usr-student-north",
+      "campus_id": "c0000002-0000-0000-0000-000000000002",
+      "role": "student",
+      "full_name": "Rohan Das",
+      "email": "rohan@north.campusos.internal",
+      "department_id": "dept-fac-north",
+      "created_at": "2026-02-05T09:00:00Z"
+    }
+  ],
+  "issues": [
+    {
+      "id": "iss-001",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "reporter_id": "usr-student-002",
+      "category": "equipment",
+      "type": "projector",
+      "description": "The ceiling projector in room 204 keeps turning off automatically after 2 minutes of class.",
+      "location_id": "loc-acad-204",
+      "severity": "HIGH",
+      "priority": "HIGH",
+      "department_id": "dept-it-main",
+      "assigned_to": "usr-staff-001",
+      "status": "resolved",
+      "before_image_url": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600",
+      "after_image_url": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600",
+      "created_at": "2026-10-07T09:15:00Z",
+      "resolved_at": "2026-10-07T11:45:00Z",
+      "verified_at": null
+    },
+    {
+      "id": "iss-002",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "reporter_id": "usr-student-001",
+      "category": "water",
+      "type": "pipe_burst",
+      "description": "Major water pipe leaking on 3rd floor hallway, pooling near power socket.",
+      "location_id": "loc-host-c3",
+      "severity": "CRITICAL",
+      "priority": "CRITICAL",
+      "department_id": "dept-fac-main",
+      "assigned_to": "usr-staff-001",
+      "status": "in_progress",
+      "before_image_url": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600",
+      "after_image_url": null,
+      "created_at": "2026-10-07T10:00:00Z",
+      "resolved_at": null,
+      "verified_at": null
+    },
+    {
+      "id": "iss-003",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "reporter_id": "usr-student-001",
+      "category": "wi-fi",
+      "type": "network_down",
+      "description": "Wi-Fi access point in Lab 1 is unreachable, no internet connection.",
+      "location_id": "loc-acad-101",
+      "severity": "HIGH",
+      "priority": "HIGH",
+      "department_id": "dept-it-main",
+      "assigned_to": null,
+      "status": "reported",
+      "before_image_url": null,
+      "after_image_url": null,
+      "created_at": "2026-10-07T11:00:00Z",
+      "resolved_at": null,
+      "verified_at": null
+    },
+    {
+      "id": "iss-004",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "reporter_id": "usr-student-003",
+      "category": "wi-fi",
+      "type": "network_down",
+      "description": "Cannot connect to campus wifi in computer lab 1 for programming practical.",
+      "location_id": "loc-acad-101",
+      "severity": "HIGH",
+      "priority": "HIGH",
+      "department_id": "dept-it-main",
+      "assigned_to": null,
+      "status": "verified",
+      "before_image_url": null,
+      "after_image_url": null,
+      "created_at": "2026-10-07T11:10:00Z",
+      "resolved_at": null,
+      "verified_at": null
+    },
+    {
+      "id": "iss-005",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "reporter_id": "usr-faculty-001",
+      "category": "cleanliness",
+      "type": "trash_overflow",
+      "description": "Recycling bin overflowing in library reading hall.",
+      "location_id": "loc-lib-201",
+      "severity": "LOW",
+      "priority": "LOW",
+      "department_id": "dept-fac-main",
+      "assigned_to": "usr-staff-001",
+      "status": "closed",
+      "before_image_url": null,
+      "after_image_url": null,
+      "created_at": "2026-10-06T08:00:00Z",
+      "resolved_at": "2026-10-06T10:00:00Z",
+      "verified_at": "2026-10-06T10:30:00Z"
+    },
+    {
+      "id": "iss-north-001",
+      "campus_id": "c0000002-0000-0000-0000-000000000002",
+      "reporter_id": "usr-student-north",
+      "category": "electrical",
+      "type": "light_flicker",
+      "description": "Fluorescent lights flickering in North Engineering Lab 1.",
+      "location_id": "loc-north-101",
+      "severity": "MEDIUM",
+      "priority": "MEDIUM",
+      "department_id": "dept-fac-north",
+      "assigned_to": null,
+      "status": "reported",
+      "before_image_url": null,
+      "after_image_url": null,
+      "created_at": "2026-10-07T10:30:00Z",
+      "resolved_at": null,
+      "verified_at": null
+    }
+  ],
+  "lost_items": [
+    {
+      "id": "lost-001",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "user_id": "usr-student-001",
+      "category": "Electronics",
+      "item_name": "Casio fx-991CW Scientific Calculator",
+      "brand": "Casio",
+      "color": "Black",
+      "location": "Central Library - 2nd Floor (Reading Hall)",
+      "occurred_at": "2026-10-07T10:00:00Z",
+      "description": "Black scientific calculator with solar panel and silver keys.",
+      "image_url": "https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=600",
+      "status": "lost",
+      "created_at": "2026-10-07T10:15:00Z"
+    },
+    {
+      "id": "lost-002",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "user_id": "usr-student-003",
+      "category": "Accessories",
+      "item_name": "Blue Nike Backpack",
+      "brand": "Nike",
+      "color": "Blue",
+      "location": "Academic Block A - Ground Floor",
+      "occurred_at": "2026-10-07T09:00:00Z",
+      "description": "Blue backpack with white Nike swoosh containing notebook.",
+      "image_url": null,
+      "status": "lost",
+      "created_at": "2026-10-07T09:30:00Z"
+    }
+  ],
+  "found_items": [
+    {
+      "id": "found-001",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "finder_id": "usr-admin-001",
+      "category": "Electronics",
+      "item_name": "Casio Scientific Calculator",
+      "brand": "Casio",
+      "color": "Black",
+      "location": "Central Library - 2nd Floor",
+      "occurred_at": "2026-10-07T11:15:00Z",
+      "description": "Found on desk 14 near the window. Has a small sticker residue on back.",
+      "image_url": "https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=600",
+      "status": "found",
+      "created_at": "2026-10-07T11:20:00Z"
+    },
+    {
+      "id": "found-002",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "finder_id": "usr-staff-001",
+      "category": "Keys",
+      "item_name": "Brass Bike Key on Honda Keychain",
+      "brand": "Honda",
+      "color": "Silver",
+      "location": "Central Library - Ground Floor Parking",
+      "occurred_at": "2026-10-07T08:30:00Z",
+      "description": "Single key with black rubber fob.",
+      "image_url": null,
+      "status": "found",
+      "created_at": "2026-10-07T08:45:00Z"
+    }
+  ],
+  "matches": [
+    {
+      "id": "match-001",
+      "lost_item_id": "lost-001",
+      "found_item_id": "found-001",
+      "score": 94,
+      "matched_attributes": [
+        "Category: Electronics",
+        "Brand: Casio",
+        "Color: Black",
+        "Location: Central Library",
+        "Time: < 2 hours"
+      ],
+      "created_at": "2026-10-07T11:21:00Z"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-001",
+      "match_id": "match-001",
+      "claimant_id": "usr-student-001",
+      "verification_answer": "There is a sticker residue on the bottom back cover.",
+      "status": "approved",
+      "created_at": "2026-10-07T11:30:00Z",
+      "verified_at": "2026-10-07T11:45:00Z"
+    }
+  ],
+  "queues": [
+    {
+      "id": "queue-001",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "service_name": "Accounts Office - Fee Clearance Desk",
+      "location_id": "loc-admin-10",
+      "is_active": true,
+      "current_token_number": 22,
+      "waiting_count": 5,
+      "created_at": "2026-10-07T08:00:00Z"
+    },
+    {
+      "id": "queue-002",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "service_name": "Student Registrar - ID Card Printing",
+      "location_id": "loc-admin-10",
+      "is_active": true,
+      "current_token_number": 15,
+      "waiting_count": 2,
+      "created_at": "2026-10-07T08:00:00Z"
+    },
+    {
+      "id": "queue-003",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "service_name": "Hostel Affairs - Room Allotment Desk",
+      "location_id": "loc-admin-10",
+      "is_active": false,
+      "current_token_number": 0,
+      "waiting_count": 0,
+      "created_at": "2026-10-07T08:00:00Z"
+    }
+  ],
+  "queue_tokens": [
+    {
+      "id": "tok-022",
+      "queue_id": "queue-001",
+      "user_id": "usr-student-002",
+      "token_number": 22,
+      "status": "called",
+      "joined_at": "2026-10-07T09:40:00Z",
+      "called_at": "2026-10-07T10:10:00Z",
+      "served_at": null
+    },
+    {
+      "id": "tok-026",
+      "queue_id": "queue-001",
+      "user_id": "usr-student-003",
+      "token_number": 26,
+      "status": "waiting",
+      "joined_at": "2026-10-07T10:00:00Z",
+      "called_at": null,
+      "served_at": null
+    },
+    {
+      "id": "tok-027",
+      "queue_id": "queue-001",
+      "user_id": "usr-student-001",
+      "token_number": 27,
+      "status": "waiting",
+      "joined_at": "2026-10-07T10:05:00Z",
+      "called_at": null,
+      "served_at": null
+    }
+  ],
+  "notices": [
+    {
+      "id": "not-001",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "author_id": "usr-admin-001",
+      "title": "End-Semester Examination Schedule - Winter 2026",
+      "category": "examination",
+      "priority": "CRITICAL",
+      "body": "The official exam timetable for Winter 2026 has been published. Verify your examination hall ticket details before the deadline.",
+      "deadline": "2026-10-15T17:00:00Z",
+      "published_at": "2026-10-06T09:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "not-002",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "author_id": "usr-admin-001",
+      "title": "Annual Inter-College Hackathon Registrations Open",
+      "category": "event",
+      "priority": "HIGH",
+      "body": "Registrations are now open for HackCampus 2026. Submit team details before Friday 6:00 PM.",
+      "deadline": "2026-10-18T18:00:00Z",
+      "published_at": "2026-10-07T08:00:00Z",
+      "is_active": true
+    },
+    {
+      "id": "not-003",
+      "campus_id": "c0000001-0000-0000-0000-000000000001",
+      "author_id": "usr-admin-001",
+      "title": "Hostel Water Tank Maintenance Shutdown Notice",
+      "category": "hostel",
+      "priority": "MEDIUM",
+      "body": "Water supply in Hostel Block C will be suspended from 2:00 PM to 4:00 PM today for maintenance.",
+      "deadline": "2026-10-07T16:00:00Z",
+      "published_at": "2026-10-07T09:30:00Z",
+      "is_active": true
+    }
+  ]
+}
